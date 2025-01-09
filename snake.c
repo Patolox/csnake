@@ -151,11 +151,6 @@ void update_snake_pos(snake* s, int rows, int cols, int* directions)
     int prevx = s->x;
     int prevy = s->y;
 
-    if (s->y >= rows - 1) s->y = 1;
-    if (s->x >= cols - 1) s->x = 1;
-    if (s->y < 1) s->y = rows - 2;
-    if (s->x < 1) s->x = cols - 2;
-
     if (directions[0] == 1) // left
     {
         s->x--;
@@ -184,6 +179,11 @@ void update_snake_pos(snake* s, int rows, int cols, int* directions)
         prevy = tempy;
         current = current->next;
     }
+
+    if (s->y >= rows - 1) s->y = 1;
+    if (s->x >= cols - 1) s->x = 1;
+    if (s->y < 1) s->y = rows - 1;
+    if (s->x < 1) s->x = cols - 1;
 }
 
 int snake_hit(snake* s)
@@ -264,16 +264,14 @@ int main(void)
             update_fruit(f, rows, cols);
         }
 
+        clear_screen();
+        clear_board(rows, cols, BOARD);
         update_snake_pos(s, rows, cols, (int*) directions);
-
         if (snake_hit(s))
         {
             clear_screen();
             break;
         }
-
-        clear_screen();
-        clear_board(rows, cols, BOARD);
         snake* aux = s;
         while(aux != NULL)
         {
