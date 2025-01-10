@@ -244,6 +244,8 @@ int main(void)
     char BOARD[rows][cols];
     char key;
     int directions[4] = {0};
+    int ate = 0;
+    int food_counter = 0;
     while(1)
     {
         if (kbhit())
@@ -262,6 +264,8 @@ int main(void)
             t->next = new_body;
             t = new_body;
             update_fruit(f, rows, cols);
+            ate = 1;
+            food_counter = 0;
         }
 
         clear_screen();
@@ -273,11 +277,20 @@ int main(void)
             break;
         }
         snake* aux = s;
+        int pass_food_counter = 0;
         while(aux != NULL)
         {
-            BOARD[aux->y][aux->x] = SNAKE_CHAR;
+            char snake_c = SNAKE_CHAR;
+            if (ate && food_counter == pass_food_counter)
+            {
+                snake_c = 'O';
+            }
+            BOARD[aux->y][aux->x] = snake_c;
             aux = aux->next;
+            pass_food_counter++;
         }
+        if (ate) food_counter++;
+        if (food_counter == score) ate = 0;
         BOARD[f->y][f->x] = FRUIT_CHAR;
         
         draw_board(rows, cols, BOARD, score);
